@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> getChuckNorrisJoke() async {
     try {
       final response = await http.get(
-        Uri.parse('https://api.api-ninjas.com/v1/chucknorris/dad'),
+        Uri.parse('https://api.api-ninjas.com/v1/chucknorris/'),
         headers: {
           'X-Api-Key': 'Fg1eV7NHdzj3Wp/VQx5AfQ==7coi7tcvw0zADpLu',
         },
