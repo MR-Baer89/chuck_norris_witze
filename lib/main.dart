@@ -32,22 +32,33 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _currentJoke = '';
+  String _errorMessage = '';
 
   Future<void> getChuckNorrisJoke() async {
-    final response = await http.get(
-      Uri.parse('https://api.api-ninjas.com/v1/chucknorris'),
-      headers: {
-        'X-Api-Key': 'Fg1eV7NHdzj3Wp/VQx5AfQ==7coi7tcvw0zADpLu',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.api-ninjas.com/v1/chucknorris/dad'),
+        headers: {
+          'X-Api-Key': 'Fg1eV7NHdzj3Wp/VQx5AfQ==7coi7tcvw0zADpLu',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _currentJoke = data['joke'];
+          _errorMessage = '';
+        });
+      } else {
+        setState(() {
+          _errorMessage =
+              'Fehler beim Abrufen des Witzes: ${response.statusCode}';
+        });
+      }
+    } catch (error) {
       setState(() {
-        _currentJoke = data['joke'];
+        _errorMessage = 'Ein unerwarteter Fehler ist aufgetreten: $error';
       });
-    } else {
-      print('Anforderung fehlgeschlagen mit Status: ${response.statusCode}.');
     }
   }
 
@@ -75,6 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ? 'Noch kein Witz geladen...'
                     : _currentJoke,
                 style: const TextStyle(fontSize: 18),
+              ),
+              Text(
+                _errorMessage,
+                style: const TextStyle(color: Colors.red),
               ),
               const SizedBox(
                 height: 16,
